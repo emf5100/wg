@@ -128,6 +128,20 @@ public class WorldGuardBlockListener implements Listener {
             }
         }
 
+        /*
+         * Notify players with bypass permission when they break blocks in a protected region
+         */
+        if(plugin.getGlobalRegionManager().hasBypass(player, player.getWorld())){
+        	RegionManager mgr = plugin.getGlobalRegionManager().get(player.getWorld());
+
+        	LocalPlayer localPlayer = plugin.wrapPlayer(player);
+        	Location loc = event.getBlock().getLocation();
+        	if (!mgr.getApplicableRegions(BukkitUtil.toVector(loc))
+        			.canBuild(localPlayer)) {
+        		player.sendMessage(ChatColor.GOLD + "You have entered a protected region.");  
+        	}
+        }
+
         if (!plugin.getGlobalRegionManager().canBuild(player, event.getBlock())
          || !plugin.getGlobalRegionManager().canConstruct(player, event.getBlock())) {
             player.sendMessage(ChatColor.DARK_RED + "You don't have permission for this area.");
